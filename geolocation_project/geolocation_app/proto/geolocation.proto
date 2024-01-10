@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package geolocation;
+
+service GeolocationService {
+    rpc GetGeolocation (GeolocationRequest) returns (GeolocationResponse);
+}
+
+message GeolocationRequest {
+    string ip_address = 1;
+}
+
+message GeolocationResponse {
+    string country = 1;
+    string city = 2;
+    // Add other relevant geolocation information here
+}
