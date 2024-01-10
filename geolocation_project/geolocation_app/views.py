@@ -1,5 +1,6 @@
 import geoip2.database
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+
 # from geolocation_pb2 import GeolocationResponse
 # from geolocation_pb2_grpc import GeolocationServiceServicer
 
@@ -20,10 +21,17 @@ from django.http import JsonResponse
 #             context.set_details(f"Geolocation not found for IP address: {ip_address}")
 #             return GeolocationResponse()
 
+def index(request):
+    return HttpResponse("Assalamualeikum dunya")
+
 def GetGeolocation(request):
+    ip_address = request.META["REMOTE_ADDR"]
     response_data = {}
     with geoip2.database.Reader("GeoLite2-City_20240109/GeoLite2-City.mmdb") as reader:
-        response = reader.city("93.190.242.254")
+        try:
+            response = reader.city(ip_address)
+        except:
+            return JsonResponse({"Error":"This ip address: {ip_addr} is not listed in database. Will be solved in the future".format(ip_addr=ip_address)})
         response_data["city"] = response.city.name
         response_data["subdivision"] = response.subdivisions.most_specific.name
         return JsonResponse(response_data)
